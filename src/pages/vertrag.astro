@@ -1,0 +1,52 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getSessionFromRequest } from '../lib/auth';
+import { getInvoices } from '../lib/mytng';
+
+const session = getSessionFromRequest(Astro.request);
+let invoices: { number: string; date: string; pdfUrl?: string; csvUrl?: string }[] = [];
+
+if (session) {
+  try {
+    invoices = await getInvoices(session);
+  } catch {
+    // session expired
+  }
+}
+---
+
+<Layout title="Tango — Mein Vertrag">
+  {session ? (
+    <div class="card">
+      <h2>Rechnungsarchiv</h2>
+      {invoices.length > 0 ? (
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Rechnungsnr.</th>
+              <th>Datum</th>
+              <th>PDF</th>
+              <th>CSV</th>
+            </tr>
+          </thead>
+          <tbody>
+            {invoices.map(inv => (
+              <tr>
+                <td>{inv.number}</td>
+                <td>{inv.date}</td>
+                <td>{inv.pdfUrl ? <a href={inv.pdfUrl}>📄</a> : '—'}</td>
+                <td>{inv.csvUrl ? <a href={inv.csvUrl}>📊</a> : '—'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p class="empty-state">Sie haben noch keine Rechnungen erhalten.</p>
+      )}
+    </div>
+  ) : (
+    <div class="empty-state">
+      <p>Bitte zuerst <a href="/">anmelden</a>.</p>
+    </div>
+  )}
+</Layout>

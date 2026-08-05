@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getSessionFromRequest } from '../lib/auth';
+
+const session = getSessionFromRequest(Astro.request);
+---
+
+<Layout title="Tango — Statistiken">
+  {session ? (
+    <div class="card">
+      <h2>Statistiken</h2>
+      <p style="color: #a0a0b0;">Ihre Übersicht zu Einwahl-Accounts und Verbindungen.</p>
+      <div style="margin-top: 1rem;">
+        <a href="/statistiken/mobilfunk" class="btn">Mobilfunk-Statistik</a>
+      </div>
+    </div>
+  ) : (
+    <div class="empty-state">
+      <p>Bitte zuerst <a href="/">anmelden</a>.</p>
+    </div>
+  )}
+</Layout>

@@ -1,0 +1,41 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getSessionFromRequest } from '../lib/auth';
+import { getServices } from '../lib/mytng';
+
+const session = getSessionFromRequest(Astro.request);
+let title = 'Dienste';
+let description = '';
+let links: { text: string; url: string }[] = [];
+
+if (session) {
+  try {
+    const info = await getServices(session);
+    title = info.title;
+    description = info.description;
+    links = info.links;
+  } catch {
+    // session expired
+  }
+}
+---
+
+<Layout title={`Tango — ${title}`}>
+  {session ? (
+    <div class="card">
+      <h2>{title}</h2>
+      <p style="color: #a0a0b0; margin-bottom: 1rem;">{description}</p>
+      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+        {links.map(l => (
+          <a href={l.url} style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            {l.text}
+          </a>
+        ))}
+      </div>
+    </div>
+  ) : (
+    <div class="empty-state">
+      <p>Bitte zuerst <a href="/">anmelden</a>.</p>
+    </div>
+  )}
+</Layout>

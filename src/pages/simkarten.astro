@@ -1,0 +1,51 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getSessionFromRequest } from '../lib/auth';
+import { getSIMCards } from '../lib/mytng';
+
+const session = getSessionFromRequest(Astro.request);
+let sims: { number: string; status: string }[] = [];
+
+if (session) {
+  try {
+    sims = await getSIMCards(session);
+  } catch {
+    // session expired
+  }
+}
+---
+
+<Layout title="Tango — SIM-Karten">
+  {session ? (
+    <div class="card">
+      <h2>Meine SIM-Karten</h2>
+      <p style="color: #a0a0b0; margin-bottom: 1rem;">
+        Hier finden Sie eine Auflistung Ihrer SIM-Karten von TNG.
+      </p>
+      {sims.length > 0 ? (
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Nummer</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sims.map(sim => (
+              <tr>
+                <td>{sim.number}</td>
+                <td>{sim.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p class="empty-state">Sie haben keine SIM-Karten.</p>
+      )}
+    </div>
+  ) : (
+    <div class="empty-state">
+      <p>Bitte zuerst <a href="/">anmelden</a>.</p>
+    </div>
+  )}
+</Layout>

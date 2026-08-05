@@ -1,0 +1,70 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getSessionFromRequest } from '../lib/auth';
+import { getDashboard } from '../lib/mytng';
+
+const session = getSessionFromRequest(Astro.request);
+let userName = '';
+let lastLogin = '';
+let services: { text: string; url: string }[] = [];
+
+if (session) {
+  try {
+    const dashboard = await getDashboard(session);
+    userName = dashboard.userName;
+    lastLogin = dashboard.lastLogin;
+    services = dashboard.services;
+  } catch {
+    // session expired
+  }
+}
+---
+
+<Layout title="Tango — myTNG Portal">
+  {session ? (
+    <div class="card">
+      <h2>Willkommen{userName ? `, ${userName}` : ''}</h2>
+      {lastLogin && <p style="color: #6a6a80; margin-top: 0.5rem;">Letzter Login: {lastLogin}</p>}
+    </div>
+    <div class="card">
+      <h2>Schnellzugriff</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.75rem;">
+        {services.map(s => (
+          <a href={s.url} class="btn">{s.text}</a>
+        ))}
+      </div>
+    </div>
+  ) : (
+    <div class="login-form">
+      <h2 style="color: #e94560; margin-bottom: 1.5rem;">⚡ Tango Login</h2>
+      <form id="login-form">
+        <input type="text" name="username" placeholder="Benutzername" required />
+        <input type="password" name="password" placeholder="Passwort" required />
+        <button type="submit" class="btn" style="width: 100%;">Anmelden</button>
+      </form>
+      <p id="error" class="error" style="display: none;"></p>
+    </div>
+    <script>
+      document.getElementById('login-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        const errorEl = document.getElementById('error');
+        errorEl!.style.display = 'none';
+
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          body: formData,
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          window.location.reload();
+        } else {
+          errorEl!.textContent = data.error || 'Login fehlgeschlagen';
+          errorEl!.style.display = 'block';
+        }
+      });
+    </script>
+  )}
+</Layout>
