@@ -11,7 +11,6 @@ export default defineConfig({
     host: true,
   },
   security: {
-    checkOrigin: false,,
-  //
+    checkOrigin: false,
   },
 });
