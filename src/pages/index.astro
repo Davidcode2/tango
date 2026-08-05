@@ -20,7 +20,7 @@ if (session) {
 }
 ---
 
-<Layout title="Tango — Übersicht" hideNav={!session}>
+<Layout title={session ? 'Tango — Übersicht' : 'Tango — Anmelden'} hideNav={!session}>
   {session ? (
     <Fragment>
       <div class="page-header">
@@ -66,69 +66,75 @@ if (session) {
     </Fragment>
   ) : (
     <Fragment>
-      <div class="login-card">
-        <div class="login-card__brand">
-          <h1>⚡ Tango</h1>
-          <p>Ihr TNG Kundenportal</p>
-        </div>
-        <form id="login-form" class="login-form">
-          <div class="field">
-            <label for="username" class="field__label">Benutzername</label>
-            <input id="username" type="text" name="username" class="input" placeholder="Benutzername" required />
+      <div class="login-wrapper">
+        <div class="login-card">
+          <div class="login-card__brand">
+            <h1>⚡ Tango</h1>
+            <p>Ihr TNG Kundenportal</p>
           </div>
-          <div class="field">
-            <label for="password" class="field__label">Passwort</label>
-            <div class="password-wrap">
-              <input id="password" type="password" name="password" class="input" placeholder="Passwort" required />
-              <button type="button" class="password-toggle" onclick="(() => {
-                const el = document.getElementById('password');
-                el.type = el.type === 'password' ? 'text' : 'password';
-  })()" aria-label="Passwort anzeigen">👁</button>
+          <form id="login-form" class="login-form">
+            <div class="field">
+              <label for="username" class="field__label">Benutzername</label>
+              <input id="username" type="text" name="username" class="input" placeholder="Benutzername" required />
             </div>
+            <div class="field">
+              <label for="password" class="field__label">Passwort</label>
+              <div class="password-wrap">
+                <input id="password" type="password" name="password" class="input" placeholder="Passwort" required />
+                <button type="button" class="password-toggle" aria-label="Passwort anzeigen">👁</button>
+              </div>
+            </div>
+            <button type="submit" class="btn btn--full">Anmelden</button>
+          </form>
+          <div id="error" class="login-error" style="display: none;"></div>
+          <div class="login-footer">
+            <a href="https://www.mytng.de/web/guest/home">Passwort vergessen?</a>
+            <span class="login-footer__links">
+              <a href="https://www.tng.de/privatkunden/impressum/">Impressum</a>
+              <span>·</span>
+              <a href="https://www.tng.de/privatkunden/datenschutz/">Datenschutz</a>
+            </span>
           </div>
-          <button type="submit" class="btn btn--full">Anmelden</button>
-        </form>
-        <div id="error" class="login-error" style="display: none;"></div>
-        <div class="login-footer">
-          <a href="https://www.mytng.de/web/guest/home">Passwort vergessen?</a>
-          <span class="login-footer__links">
-            <a href="https://www.tng.de/privatkunden/impressum/">Impressum</a>
-            <span>·</span>
-            <a href="https://www.tng.de/privatkunden/datenschutz/">Datenschutz</a>
-          </span>
         </div>
       </div>
-    </Fragment>
-    <script is:inline>
-      document.getElementById('login-form')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const form = e.target;
-        const formData = new FormData(form);
-        const errorEl = document.getElementById('error');
-        errorEl.style.display = 'none';
-        const btn = form.querySelector('button[type="submit"]');
-        btn.disabled = true;
-        btn.textContent = 'Anmelden…';
+      <script is:inline>
+        document.getElementById('login-form')?.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const form = e.target;
+          const formData = new FormData(form);
+          const errorEl = document.getElementById('error');
+          errorEl.style.display = 'none';
+          const btn = form.querySelector('button[type="submit"]');
+          btn.disabled = true;
+          btn.textContent = 'Anmelden…';
 
-        try {
-          const res = await fetch('/api/login', { method: 'POST', body: formData });
-          const data = await res.json();
-          if (data.success) {
-            window.location.reload();
-          } else {
-            errorEl.textContent = data.error || 'Login fehlgeschlagen';
+          try {
+            const res = await fetch('/api/login', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.success) {
+              window.location.reload();
+            } else {
+              errorEl.textContent = data.error || 'Login fehlgeschlagen';
+              errorEl.style.display = 'block';
+              btn.disabled = false;
+              btn.textContent = 'Anmelden';
+            }
+          } catch {
+            errorEl.textContent = 'Verbindung fehlgeschlagen';
             errorEl.style.display = 'block';
             btn.disabled = false;
             btn.textContent = 'Anmelden';
           }
-        } catch {
-          errorEl.textContent = 'Verbindung fehlgeschlagen';
-          errorEl.style.display = 'block';
-          btn.disabled = false;
-          btn.textContent = 'Anmelden';
-        }
-      });
-    </script>
+        });
+
+        // Password visibility toggle
+        document.querySelector('.password-toggle')?.addEventListener('click', function() {
+          const el = document.getElementById('password');
+          el.type = el.type === 'password' ? 'text' : 'password';
+          this.textContent = el.type === 'password' ? '👁' : '🙈';
+        });
+      </script>
+    </Fragment>
   )}
 </Layout>
 
@@ -150,6 +156,7 @@ if (session) {
     font-size: 1rem;
     opacity: 0.5;
     padding: 0.25rem;
+    transition: opacity var(--transition);
   }
   .password-toggle:hover {
     opacity: 1;
