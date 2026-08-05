@@ -16,10 +16,10 @@ on:
         required: false
         type: string
         description: "Git ref to checkout (defaults to triggering commit)"
-  outputs:
-    version:
-      description: "Version extracted from package.json"
-      value: ${{ jobs.build-and-push.outputs.version }}
+    outputs:
+      version:
+        description: "Version extracted from package.json"
+        value: ${{ jobs.build-and-push.outputs.version }}
 
 env:
   REGISTRY: ghcr.io
