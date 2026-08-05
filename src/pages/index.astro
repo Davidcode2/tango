@@ -20,37 +20,72 @@ if (session) {
 }
 ---
 
-<Layout title="Tango — myTNG Portal">
+<Layout title="Tango — Übersicht">
   {session ? (
-    <div class="card">
-      <h2>Willkommen{userName ? `, ${userName}` : ''}</h2>
-      {lastLogin && <p style="color: #6a6a80; margin-top: 0.5rem;">Letzter Login: {lastLogin}</p>}
-    </div>
-    <div class="card">
-      <h2>Schnellzugriff</h2>
-      <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.75rem;">
-        {services.map(s => (
-          <a href={s.url} class="btn">{s.text}</a>
-        ))}
+    <Fragment>
+      <div class="page-header">
+        <h1>Willkommen{userName ? `, ${userName}` : ''}</h1>
+        <p>Ihr persönlicher Service-Bereich von TNG</p>
+      </div>
+
+      {lastLogin && (
+        <div class="stat-grid">
+          <div class="stat">
+            <div class="stat__label">Letzter Login</div>
+            <div class="stat__value">{lastLogin}</div>
+          </div>
+          <div class="stat">
+            <div class="stat__label">Status</div>
+            <div class="stat__value" style="color: var(--success);">● Aktiv</div>
+          </div>
+        </div>
+      )}
+
+      <div class="card">
+        <div class="card__header">
+          <div>
+            <div class="card__title">Schnellzugriff</div>
+            <div class="card__subtitle">Ihre Dienste und Vertragsverwaltung</div>
+          </div>
+        </div>
+        <div class="link-list">
+          {services.map(s => (
+            <a href={s.url} class="link-list__item">
+              <span>{s.text}</span>
+              <span class="link-list__arrow">→</span>
+            </a>
+          ))}
+          {services.length === 0 && (
+            <div class="empty-state">
+              <div class="empty-state__icon">◉</div>
+              <p>Keine Dienste verfügbar.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </Fragment>
+  ) : (
+    <div class="login-wrapper">
+      <div class="login-card">
+        <div class="login-card__brand">
+          <h1>⚡ Tango</h1>
+          <p>myTNG Kundenportal — neu interpretiert</p>
+        </div>
+        <form id="login-form" class="login-form">
+          <input type="text" name="username" class="input" placeholder="Benutzername" required />
+          <input type="password" name="password" class="input" placeholder="Passwort" required />
+          <button type="submit" class="btn btn--full">Anmelden</button>
+        </form>
+        <div id="error" class="login-error" style="display: none;"></div>
       </div>
     </div>
-  ) : (
-    <div class="login-form">
-      <h2 style="color: #e94560; margin-bottom: 1.5rem;">⚡ Tango Login</h2>
-      <form id="login-form">
-        <input type="text" name="username" placeholder="Benutzername" required />
-        <input type="password" name="password" placeholder="Passwort" required />
-        <button type="submit" class="btn" style="width: 100%;">Anmelden</button>
-      </form>
-      <p id="error" class="error" style="display: none;"></p>
-    </div>
-    <script>
+    <script is:inline>
       document.getElementById('login-form')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const form = e.target;
         const formData = new FormData(form);
         const errorEl = document.getElementById('error');
-        errorEl!.style.display = 'none';
+        errorEl.style.display = 'none';
 
         const res = await fetch('/api/login', {
           method: 'POST',
@@ -61,8 +96,8 @@ if (session) {
         if (data.success) {
           window.location.reload();
         } else {
-          errorEl!.textContent = data.error || 'Login fehlgeschlagen';
-          errorEl!.style.display = 'block';
+          errorEl.textContent = data.error || 'Login fehlgeschlagen';
+          errorEl.style.display = 'block';
         }
       });
     </script>

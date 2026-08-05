@@ -7,15 +7,29 @@ const session = getSessionFromRequest(Astro.request);
 
 <Layout title="Tango — Statistiken">
   {session ? (
-    <div class="card">
-      <h2>Statistiken</h2>
-      <p style="color: #a0a0b0;">Ihre Übersicht zu Einwahl-Accounts und Verbindungen.</p>
-      <div style="margin-top: 1rem;">
-        <a href="/statistiken/mobilfunk" class="btn">Mobilfunk-Statistik</a>
+    <Fragment>
+      <div class="page-header">
+        <h1>Statistiken</h1>
+        <p>Ihre Übersicht zu Einwahl-Accounts und Verbindungen</p>
       </div>
-    </div>
+      <div class="card">
+        <div class="card__header">
+          <div>
+            <div class="card__title">Verbindungsübersicht</div>
+            <div class="card__subtitle">Anruflisten und Einzelverbindungsnachweise</div>
+          </div>
+        </div>
+        <div class="link-list">
+          <a href="/statistiken/mobilfunk" class="link-list__item">
+            <span>Mobilfunk-Statistik</span>
+            <span class="link-list__arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </Fragment>
   ) : (
     <div class="empty-state">
+      <div class="empty-state__icon">🔒</div>
       <p>Bitte zuerst <a href="/">anmelden</a>.</p>
     </div>
   )}

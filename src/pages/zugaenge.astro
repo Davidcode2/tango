@@ -5,7 +5,7 @@ import { getAccounts } from '../lib/mytng';
 
 const session = getSessionFromRequest(Astro.request);
 let title = 'Zugänge';
-let description = '';
+let description = 'Ihre Login-Verwaltung';
 let links: { text: string; url: string }[] = [];
 
 if (session) {
@@ -22,19 +22,37 @@ if (session) {
 
 <Layout title={`Tango — ${title}`}>
   {session ? (
-    <div class="card">
-      <h2>{title}</h2>
-      <p style="color: #a0a0b0; margin-bottom: 1rem;">{description}</p>
-      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-        {links.map(l => (
-          <a href={l.url} style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
-            {l.text}
-          </a>
-        ))}
+    <Fragment>
+      <div class="page-header">
+        <h1>{title}</h1>
+        <p>{description}</p>
       </div>
-    </div>
+      <div class="card">
+        <div class="card__header">
+          <div>
+            <div class="card__title">Login-Verwaltung</div>
+            <div class="card__subtitle">Homepage, FTP, Webstatistik und Einwahl-Login</div>
+          </div>
+        </div>
+        <div class="link-list">
+          {links.map(l => (
+            <a href={l.url} class="link-list__item">
+              <span>{l.text}</span>
+              <span class="link-list__arrow">→</span>
+            </a>
+          ))}
+          {links.length === 0 && (
+            <div class="empty-state">
+              <div class="empty-state__icon">◇</div>
+              <p>Keine Zugänge verfügbar.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </Fragment>
   ) : (
     <div class="empty-state">
+      <div class="empty-state__icon">🔒</div>
       <p>Bitte zuerst <a href="/">anmelden</a>.</p>
     </div>
   )}

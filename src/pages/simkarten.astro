@@ -17,34 +17,50 @@ if (session) {
 
 <Layout title="Tango — SIM-Karten">
   {session ? (
-    <div class="card">
-      <h2>Meine SIM-Karten</h2>
-      <p style="color: #a0a0b0; margin-bottom: 1rem;">
-        Hier finden Sie eine Auflistung Ihrer SIM-Karten von TNG.
-      </p>
-      {sims.length > 0 ? (
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Nummer</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sims.map(sim => (
+    <Fragment>
+      <div class="page-header">
+        <h1>SIM-Karten</h1>
+        <p>Verwaltung und Aktivierung Ihrer TNG SIM-Karten</p>
+      </div>
+      <div class="card">
+        <div class="card__header">
+          <div>
+            <div class="card__title">Meine SIM-Karten</div>
+            <div class="card__subtitle">Übersicht und Status</div>
+          </div>
+          <button class="btn btn--ghost btn--sm" onclick="window.location.reload()">Aktualisieren</button>
+        </div>
+        {sims.length > 0 ? (
+          <table class="table">
+            <thead>
               <tr>
-                <td>{sim.number}</td>
-                <td>{sim.status}</td>
+                <th>Nummer</th>
+                <th>Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <p class="empty-state">Sie haben keine SIM-Karten.</p>
-      )}
-    </div>
+            </thead>
+            <tbody>
+              {sims.map(sim => (
+                <tr>
+                  <td>{sim.number}</td>
+                  <td>{sim.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <div class="empty-state">
+            <div class="empty-state__icon">⬡</div>
+            <p>Sie haben keine SIM-Karten.</p>
+          </div>
+        )}
+      </div>
+      <div style="margin-top: 1rem;">
+        <a href="/vertrag" class="btn btn--ghost">← Zurück zum Vertrag</a>
+      </div>
+    </Fragment>
   ) : (
     <div class="empty-state">
+      <div class="empty-state__icon">🔒</div>
       <p>Bitte zuerst <a href="/">anmelden</a>.</p>
     </div>
   )}
