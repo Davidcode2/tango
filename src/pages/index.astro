@@ -20,7 +20,7 @@ if (session) {
 }
 ---
 
-<Layout title="Tango — Übersicht">
+<Layout title="Tango — Übersicht" hideNav={!session}>
   {session ? (
     <Fragment>
       <div class="page-header">
@@ -65,20 +65,40 @@ if (session) {
       </div>
     </Fragment>
   ) : (
-    <div class="login-wrapper">
+    <Fragment>
       <div class="login-card">
         <div class="login-card__brand">
           <h1>⚡ Tango</h1>
-          <p>myTNG Kundenportal — neu interpretiert</p>
+          <p>Ihr TNG Kundenportal</p>
         </div>
         <form id="login-form" class="login-form">
-          <input type="text" name="username" class="input" placeholder="Benutzername" required />
-          <input type="password" name="password" class="input" placeholder="Passwort" required />
+          <div class="field">
+            <label for="username" class="field__label">Benutzername</label>
+            <input id="username" type="text" name="username" class="input" placeholder="Benutzername" required />
+          </div>
+          <div class="field">
+            <label for="password" class="field__label">Passwort</label>
+            <div class="password-wrap">
+              <input id="password" type="password" name="password" class="input" placeholder="Passwort" required />
+              <button type="button" class="password-toggle" onclick="(() => {
+                const el = document.getElementById('password');
+                el.type = el.type === 'password' ? 'text' : 'password';
+  })()" aria-label="Passwort anzeigen">👁</button>
+            </div>
+          </div>
           <button type="submit" class="btn btn--full">Anmelden</button>
         </form>
         <div id="error" class="login-error" style="display: none;"></div>
+        <div class="login-footer">
+          <a href="https://www.mytng.de/web/guest/home">Passwort vergessen?</a>
+          <span class="login-footer__links">
+            <a href="https://www.tng.de/privatkunden/impressum/">Impressum</a>
+            <span>·</span>
+            <a href="https://www.tng.de/privatkunden/datenschutz/">Datenschutz</a>
+          </span>
+        </div>
       </div>
-    </div>
+    </Fragment>
     <script is:inline>
       document.getElementById('login-form')?.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -86,20 +106,69 @@ if (session) {
         const formData = new FormData(form);
         const errorEl = document.getElementById('error');
         errorEl.style.display = 'none';
+        const btn = form.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        btn.textContent = 'Anmelden…';
 
-        const res = await fetch('/api/login', {
-          method: 'POST',
-          body: formData,
-        });
-        const data = await res.json();
-
-        if (data.success) {
-          window.location.reload();
-        } else {
-          errorEl.textContent = data.error || 'Login fehlgeschlagen';
+        try {
+          const res = await fetch('/api/login', { method: 'POST', body: formData });
+          const data = await res.json();
+          if (data.success) {
+            window.location.reload();
+          } else {
+            errorEl.textContent = data.error || 'Login fehlgeschlagen';
+            errorEl.style.display = 'block';
+            btn.disabled = false;
+            btn.textContent = 'Anmelden';
+          }
+        } catch {
+          errorEl.textContent = 'Verbindung fehlgeschlagen';
           errorEl.style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = 'Anmelden';
         }
       });
     </script>
   )}
 </Layout>
+
+<style>
+  .password-wrap {
+    position: relative;
+  }
+  .password-wrap .input {
+    padding-right: 2.75rem;
+  }
+  .password-toggle {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    opacity: 0.5;
+    padding: 0.25rem;
+  }
+  .password-toggle:hover {
+    opacity: 1;
+  }
+  .login-footer {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .login-footer__links {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+  }
+  .login-footer__links a {
+    color: var(--text-muted);
+  }
+  .login-footer__links a:hover {
+    color: var(--accent-secondary);
+  }
+</style>
