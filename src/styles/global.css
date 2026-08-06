@@ -493,6 +493,11 @@ a:hover {
 #theme-toggle.is-dark .theme-icon--moon { display: none; }
 #theme-toggle.is-dark .theme-icon--sun { display: block; }
 
+/* ===== Password eye toggle (global — same scoped CSS issue) ===== */
+.eye-icon--hide { display: none; }
+.password-toggle.is-visible .eye-icon--show { display: none; }
+.password-toggle.is-visible .eye-icon--hide { display: block; }
+
 /* ===== External link indicator ===== */
 .link-list__item--external .link-list__arrow {
   color: var(--text-muted);
