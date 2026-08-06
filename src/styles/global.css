@@ -486,6 +486,13 @@ a:hover {
   -webkit-overflow-scrolling: touch;
 }
 
+/* ===== Theme toggle (global — must be unscoped for child Icon SVGs) ===== */
+.theme-icon { display: none; }
+.theme-icon--moon { display: block; }
+.theme-icon--sun { display: none; }
+#theme-toggle.is-dark .theme-icon--moon { display: none; }
+#theme-toggle.is-dark .theme-icon--sun { display: block; }
+
 /* ===== External link indicator ===== */
 .link-list__item--external .link-list__arrow {
   color: var(--text-muted);
