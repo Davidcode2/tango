@@ -1,4 +1,8 @@
 ---
+import { getSessionFromRequest } from '../lib/auth';
+
+const session = getSessionFromRequest(Astro.request);
+
 const navItems = [
   { href: '/', label: 'Übersicht', icon: '◈' },
   { href: '/dienste', label: 'Dienste', icon: '◉' },
@@ -34,11 +38,32 @@ const currentPath = Astro.url.pathname;
         </li>
       ))}
     </ul>
-    <button id="theme-toggle" class="nav__theme" onclick="window.__toggleTheme()" aria-label="Theme wechseln">
-      ☾
-    </button>
+    <div class="nav__actions">
+      <button id="theme-toggle" class="nav__theme" onclick="window.__toggleTheme()" aria-label="Theme wechseln">
+        ☾
+      </button>
+      {session && (
+        <button id="logout-btn" class="nav__logout" onclick="window.__logout()" aria-label="Abmelden" title="Abmelden">
+          ⏻
+        </button>
+      )}
+    </div>
   </div>
 </nav>
+
+<script is:inline>
+  // Set correct theme icon on load
+  (function() {
+    const btn = document.getElementById('theme-toggle');
+    const current = document.documentElement.getAttribute('data-theme');
+    if (btn && current === 'dark') btn.textContent = '☀';
+  })();
+
+  window.__logout = async () => {
+    await fetch('/api/logout', { method: 'POST' });
+    window.location.href = '/';
+  };
+</script>
 
 <style>
   .nav {
@@ -70,7 +95,6 @@ const currentPath = Astro.url.pathname;
 
   .nav__logo-icon {
     font-size: 1.25rem;
-    color: var(--accent-secondary);
   }
 
   .nav__logo-text {
@@ -142,7 +166,13 @@ const currentPath = Astro.url.pathname;
     opacity: 1;
   }
 
-  .nav__theme {
+  .nav__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .nav__theme, .nav__logout {
     background: none;
     border: 1px solid var(--border-primary);
     border-radius: var(--radius-sm);
@@ -154,9 +184,14 @@ const currentPath = Astro.url.pathname;
     line-height: 1;
   }
 
-  .nav__theme:hover {
+  .nav__theme:hover, .nav__logout:hover {
     border-color: var(--accent-secondary);
     color: var(--accent-secondary);
+  }
+
+  .nav__logout:hover {
+    border-color: var(--error);
+    color: var(--error);
   }
 
   @media (max-width: 768px) {

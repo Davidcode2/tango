@@ -1,16 +1,31 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { getSessionFromRequest } from '../lib/auth';
+import { getStatistics } from '../lib/mytng';
 
 const session = getSessionFromRequest(Astro.request);
+let title = 'Statistiken';
+let description = 'Ihre Übersicht zu Einwahl-Accounts und Verbindungen';
+let links: { text: string; url: string }[] = [];
+
+if (session) {
+  try {
+    const info = await getStatistics(session);
+    title = info.title;
+    description = info.description;
+    links = info.links;
+  } catch {
+    // session expired
+  }
+}
 ---
 
-<Layout title="Tango — Statistiken">
+<Layout title={`Tango — ${title}`}>
   {session ? (
     <Fragment>
       <div class="page-header">
-        <h1>Statistiken</h1>
-        <p>Ihre Übersicht zu Einwahl-Accounts und Verbindungen</p>
+        <h1>{title}</h1>
+        <p>{description}</p>
       </div>
       <div class="card">
         <div class="card__header">
@@ -20,10 +35,18 @@ const session = getSessionFromRequest(Astro.request);
           </div>
         </div>
         <div class="link-list">
-          <a href="/statistiken/mobilfunk" class="link-list__item">
-            <span>Mobilfunk-Statistik</span>
-            <span class="link-list__arrow">→</span>
-          </a>
+          {links.map(l => (
+            <a href={l.url} class="link-list__item link-list__item--external" target="_blank" rel="noopener">
+              <span>{l.text}</span>
+              <span class="link-list__arrow">→</span>
+            </a>
+          ))}
+          {links.length === 0 && (
+            <div class="empty-state">
+              <div class="empty-state__icon">▤</div>
+              <p>Keine Statistiken verfügbar.</p>
+            </div>
+          )}
         </div>
       </div>
     </Fragment>

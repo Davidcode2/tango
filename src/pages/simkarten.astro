@@ -31,6 +31,7 @@ if (session) {
           <button class="btn btn--ghost btn--sm" onclick="window.location.reload()">Aktualisieren</button>
         </div>
         {sims.length > 0 ? (
+          <div class="table-wrap">
           <table class="table">
             <thead>
               <tr>
@@ -47,6 +48,7 @@ if (session) {
               ))}
             </tbody>
           </table>
+          </div>
         ) : (
           <div class="empty-state">
             <div class="empty-state__icon">⬡</div>

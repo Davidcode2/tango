@@ -187,6 +187,42 @@ export async function getSIMCards(
   return cards;
 }
 
+export async function getStatistics(
+  session: MyTNGSession
+): Promise<ServiceInfo> {
+  const html = await fetchPage('/group/mytng/statistiken', session);
+  const $ = cheerio.load(html);
+
+  const title = $('h1').first().text().trim() || 'Statistiken';
+  const description =
+    $('h2').first().text().trim() ||
+    'Ihre Übersicht zu Einwahl-Accounts und Verbindungen';
+
+  const links: { text: string; url: string }[] = [];
+  $('.portlet-content a, .content a, .nav-item a').each((_, el) => {
+    const $el = $(el);
+    const href = $el.attr('href');
+    const text = $el.text().trim();
+    if (href && text && !text.match(/^(Impressum|Datenschutz|AGB)$/i)) {
+      links.push({
+        text,
+        url: href.startsWith('http') ? href : `${MYTNG_BASE}${href}`,
+      });
+    }
+  });
+
+  // Fallback: if scraper finds nothing, provide standard links
+  if (links.length === 0) {
+    links.push(
+      { text: 'Mobilfunk-Statistik', url: `${MYTNG_BASE}/group/mytng/statistiken` },
+      { text: 'Festnetz-Statistik', url: `${MYTNG_BASE}/group/mytng/statistiken/festnetz` },
+      { text: 'Einzelverbindungsnachweis', url: `${MYTNG_BASE}/group/mytng/statistiken/einzelverbindung` },
+    );
+  }
+
+  return { title, description, links };
+}
+
 export async function getServices(
   session: MyTNGSession
 ): Promise<ServiceInfo> {

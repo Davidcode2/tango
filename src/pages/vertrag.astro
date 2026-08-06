@@ -30,6 +30,7 @@ if (session) {
           </div>
         </div>
         {invoices.length > 0 ? (
+          <div class="table-wrap">
           <table class="table">
             <thead>
               <tr>
@@ -50,6 +51,7 @@ if (session) {
               ))}
             </tbody>
           </table>
+          </div>
         ) : (
           <div class="empty-state">
             <div class="empty-state__icon">📄</div>

@@ -362,9 +362,14 @@ a:hover {
   font-size: 0.8125rem;
   margin-top: 0.75rem;
   padding: 0.5rem 0.75rem;
-  background: var(--error)10;
+  background: rgba(220, 38, 38, 0.08);
   border-radius: var(--radius-sm);
-  border: 1px solid var(--error)30;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+[data-theme="dark"] .login-error {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.25);
 }
 
 /* ===== Stat cards ===== */
@@ -428,6 +433,75 @@ a:hover {
 .link-list__arrow {
   color: var(--text-muted);
   font-size: 0.875rem;
+}
+
+/* ===== Badges ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-secondary);
+  border: 1px solid var(--border-accent);
+}
+
+.badge--success {
+  background: rgba(22, 163, 74, 0.1);
+  color: var(--success);
+  border-color: rgba(22, 163, 74, 0.2);
+}
+
+.badge--warning {
+  background: rgba(217, 119, 6, 0.1);
+  color: var(--warning);
+  border-color: rgba(217, 119, 6, 0.2);
+}
+
+.badge--error {
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--error);
+  border-color: rgba(220, 38, 38, 0.2);
+}
+
+/* ===== Table wrapper (mobile scroll) ===== */
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ===== External link indicator ===== */
+.link-list__item--external .link-list__arrow::after {
+  content: ' ↗';
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+/* ===== Footer ===== */
+.footer {
+  margin-top: 3rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--border-primary);
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.footer a {
+  color: var(--text-muted);
+}
+
+.footer a:hover {
+  color: var(--accent-secondary);
+}
+
+.footer__links {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
 }
 
 /* ===== Responsive ===== */
