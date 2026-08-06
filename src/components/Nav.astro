@@ -53,10 +53,12 @@ const currentPath = Astro.url.pathname;
 </nav>
 
 <script is:inline>
+  // Set initial theme toggle state from data-theme attribute
   (function() {
     const btn = document.getElementById('theme-toggle');
-    const current = document.documentElement.getAttribute('data-theme');
-    if (btn) btn.classList.toggle('is-dark', current === 'dark');
+    if (!btn) return;
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    btn.classList.toggle('is-dark', current === 'dark');
   })();
 
   window.__toggleTheme = () => {
@@ -180,11 +182,11 @@ const currentPath = Astro.url.pathname;
     color: var(--error);
   }
 
-  /* Theme toggle: show moon in light, sun in dark */
-  .theme-icon--sun { display: none; }
+  /* Theme toggle: show moon in light mode, sun in dark mode */
+  .theme-icon { display: none; }
   .theme-icon--moon { display: block; }
-  #theme-toggle.is-dark .theme-icon--sun { display: block; }
   #theme-toggle.is-dark .theme-icon--moon { display: none; }
+  #theme-toggle.is-dark .theme-icon--sun { display: block; }
 
   @media (max-width: 768px) {
     .nav {

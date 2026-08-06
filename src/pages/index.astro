@@ -26,20 +26,29 @@ if (session) {
   {session ? (
     <Fragment>
       <div class="page-header">
-        <h1>Willkommen{userName ? `, ${userName}` : ''}</h1>
+        <h1>Übersicht</h1>
         <p>Ihr persönlicher Service-Bereich von TNG</p>
       </div>
 
       {lastLogin && (
-        <div class="stat-grid">
-          <div class="stat">
-            <div class="stat__label">Letzter Login</div>
-            <div class="stat__value">{lastLogin}</div>
+        <div class="card">
+          <div class="card__header">
+            <div>
+              <div class="card__title">Konto-Status</div>
+              <div class="card__subtitle">Letzte Anmeldung und Aktivität</div>
+            </div>
+            <div style="color: var(--success); display: flex; align-items: center; gap: 0.375rem; font-size: 0.875rem; font-weight: 500;">
+              <Icon name="check-circle" size={16} /> Aktiv
+            </div>
           </div>
-          <div class="stat">
-            <div class="stat__label">Status</div>
-            <div class="stat__value" style="color: var(--success); display: flex; align-items: center; gap: 0.375rem;">
-              <Icon name="check-circle" size={18} /> Aktiv
+          <div class="stat-row">
+            <div class="stat-row__item">
+              <div class="stat-row__label">Angemeldet als</div>
+              <div class="stat-row__value">{userName || '—'}</div>
+            </div>
+            <div class="stat-row__item">
+              <div class="stat-row__label">Letzter Login</div>
+              <div class="stat-row__value">{lastLogin || '—'}</div>
             </div>
           </div>
         </div>
@@ -195,5 +204,29 @@ if (session) {
   }
   .login-footer__links a:hover {
     color: var(--accent-secondary);
+  }
+
+  /* Stat row (Übersicht) */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+  .stat-row__item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .stat-row__label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+  .stat-row__value {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
   }
 </style>

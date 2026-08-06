@@ -43,16 +43,5 @@ const { title = 'Tango', hideNav = false } = Astro.props;
         </footer>
       )}
     </div>
-    <script is:inline>
-      window.__toggleTheme = () => {
-        const html = document.documentElement;
-        const current = html.getAttribute('data-theme');
-        const next = current === 'dark' ? 'light' : 'dark';
-        html.setAttribute('data-theme', next);
-        localStorage.setItem('tango-theme', next);
-        const btn = document.getElementById('theme-toggle');
-        if (btn) btn.textContent = next === 'dark' ? '☀' : '☾';
-      };
-    </script>
   </body>
 </html>
