@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Unauth from '../components/Unauth.astro';
 import { getSessionFromRequest } from '../lib/auth';
 import { getInvoices } from '../lib/mytng';
 
@@ -31,26 +32,26 @@ if (session) {
         </div>
         {invoices.length > 0 ? (
           <div class="table-wrap">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Rechnungsnr.</th>
-                <th>Datum</th>
-                <th>PDF</th>
-                <th>CSV</th>
-              </tr>
-            </thead>
-            <tbody>
-              {invoices.map(inv => (
+            <table class="table">
+              <thead>
                 <tr>
-                  <td>{inv.number}</td>
-                  <td>{inv.date}</td>
-                  <td>{inv.pdfUrl ? <a href={inv.pdfUrl}>PDF</a> : '—'}</td>
-                  <td>{inv.csvUrl ? <a href={inv.csvUrl}>CSV</a> : '—'}</td>
+                  <th>Rechnungsnr.</th>
+                  <th>Datum</th>
+                  <th>PDF</th>
+                  <th>CSV</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {invoices.map(inv => (
+                  <tr>
+                    <td>{inv.number}</td>
+                    <td>{inv.date}</td>
+                    <td>{inv.pdfUrl ? <a href={inv.pdfUrl} target="_blank" rel="noopener">PDF</a> : '—'}</td>
+                    <td>{inv.csvUrl ? <a href={inv.csvUrl} target="_blank" rel="noopener">CSV</a> : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : (
           <div class="empty-state">
@@ -64,9 +65,6 @@ if (session) {
       </div>
     </Fragment>
   ) : (
-    <div class="empty-state">
-      <div class="empty-state__icon">🔒</div>
-      <p>Bitte zuerst <a href="/">anmelden</a>.</p>
-    </div>
+    <Unauth pageName="Vertragsdaten" />
   )}
 </Layout>

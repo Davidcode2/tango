@@ -26,21 +26,23 @@ const { title = 'Tango', hideNav = false } = Astro.props;
   </head>
   <body>
     {!hideNav && <Nav />}
-    <main class:list={["container", { "container--centered": hideNav }]}>
-      <slot />
-    </main>
-    {!hideNav && (
-      <footer class="footer">
-        <div>⚡ Tango — Alternative TNG Kundenportal UI</div>
-        <div class="footer__links">
-          <a href="https://www.tng.de/privatkunden/impressum/">Impressum</a>
-          <span>·</span>
-          <a href="https://www.tng.de/privatkunden/datenschutz/">Datenschutz</a>
-          <span>·</span>
-          <a href="https://www.mytng.de/web/guest/home">myTNG</a>
-        </div>
-      </footer>
-    )}
+    <div class:list={["page-shell", { "page-shell--centered": hideNav }]}>
+      <main class:list={["container", { "container--centered": hideNav }]}>
+        <slot />
+      </main>
+      {!hideNav && (
+        <footer class="footer">
+          <div>⚡ Tango — Alternative TNG Kundenportal UI</div>
+          <div class="footer__links">
+            <a href="https://www.tng.de/privatkunden/impressum/">Impressum</a>
+            <span> · </span>
+            <a href="https://www.tng.de/privatkunden/datenschutz/">Datenschutz</a>
+            <span> · </span>
+            <a href="https://www.mytng.de/web/guest/home">myTNG</a>
+          </div>
+        </footer>
+      )}
+    </div>
     <script is:inline>
       window.__toggleTheme = () => {
         const html = document.documentElement;

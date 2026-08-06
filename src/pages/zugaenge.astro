@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Unauth from '../components/Unauth.astro';
 import { getSessionFromRequest } from '../lib/auth';
 import { getAccounts } from '../lib/mytng';
 
@@ -51,9 +52,6 @@ if (session) {
       </div>
     </Fragment>
   ) : (
-    <div class="empty-state">
-      <div class="empty-state__icon">🔒</div>
-      <p>Bitte zuerst <a href="/">anmelden</a>.</p>
-    </div>
+    <Unauth pageName="Zugänge" />
   )}
 </Layout>

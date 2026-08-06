@@ -17,7 +17,8 @@
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #94a3b8;
-  --text-inverse: #f8fafc;
+--text-inverse: #f8fafc;
+  --btn-text: #ffffff;
 
   --accent-primary: #00336e;
   --accent-secondary: #00589c;
@@ -56,6 +57,7 @@
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
   --text-inverse: #0a0e1a;
+  --btn-text: #ffffff;
 
   --accent-primary: #00589c;
   --accent-secondary: #6685a8;
@@ -114,7 +116,18 @@ a:hover {
 }
 
 /* ===== Layout ===== */
+.page-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.page-shell--centered {
+  min-height: 100vh;
+}
+
 .container {
+  flex: 1;
   max-width: 1140px;
   margin: 0 auto;
   padding: 2rem 1.5rem;
@@ -223,7 +236,7 @@ a:hover {
   gap: 0.5rem;
   padding: 0.625rem 1.25rem;
   background: var(--accent-primary);
-  color: var(--text-inverse);
+  color: var(--btn-text);
   border: none;
   border-radius: var(--radius-sm);
   font-family: var(--font-body);
