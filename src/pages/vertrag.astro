@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
 import Unauth from '../components/Unauth.astro';
 import { getSessionFromRequest } from '../lib/auth';
 import { getInvoices } from '../lib/mytng';
@@ -55,13 +56,15 @@ if (session) {
           </div>
         ) : (
           <div class="empty-state">
-            <div class="empty-state__icon">📄</div>
+            <Icon name="file-text" size={32} class="empty-state__icon" />
             <p>Sie haben noch keine Rechnungen erhalten.</p>
           </div>
         )}
       </div>
       <div style="margin-top: 1rem;">
-        <a href="/simkarten" class="btn btn--ghost">→ SIM-Karten verwalten</a>
+        <a href="/simkarten" class="btn btn--ghost">
+          <Icon name="credit-card" size={16} /> SIM-Karten verwalten
+        </a>
       </div>
     </Fragment>
   ) : (

@@ -1,0 +1,38 @@
+---
+// Tango logo — clean geometric wordmark inspired by TNG's brand style
+// Navy blue, sharp angles, subtle network node motif
+interface Props {
+  size?: number;
+}
+const { size = 28 } = Astro.props;
+---
+
+<svg
+  width={size * 3.2}
+  height={size}
+  viewBox="0 0 120 36"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  class="tango-logo"
+  aria-label="Tango"
+>
+  <!-- Network node mark: three connected dots forming a triangle -->
+  <g>
+    <circle cx="8" cy="8" r="3" fill="currentColor"/>
+    <circle cx="18" cy="24" r="3" fill="currentColor"/>
+    <circle cx="8" cy="28" r="2.5" fill="currentColor" opacity="0.5"/>
+    <line x1="8" y1="8" x2="18" y2="24" stroke="currentColor" stroke-width="1.5"/>
+    <line x1="8" y1="28" x2="18" y2="24" stroke="currentColor" stroke-width="1.5"/>
+    <line x1="8" y1="8" x2="8" y2="28" stroke="currentColor" stroke-width="1" opacity="0.4"/>
+  </g>
+  <!-- Wordmark -->
+  <text
+    x="28"
+    y="26"
+    font-family="Space Grotesk, sans-serif"
+    font-size="22"
+    font-weight="700"
+    fill="currentColor"
+    letter-spacing="-0.5"
+  >Tango</text>
+</svg>

@@ -308,9 +308,9 @@ a:hover {
 }
 
 .empty-state__icon {
-  font-size: 2rem;
   margin-bottom: 0.75rem;
-  opacity: 0.5;
+  opacity: 0.4;
+  color: var(--text-muted);
 }
 
 /* ===== Login ===== */
@@ -445,7 +445,7 @@ a:hover {
 
 .link-list__arrow {
   color: var(--text-muted);
-  font-size: 0.875rem;
+  flex-shrink: 0;
 }
 
 /* ===== Badges ===== */
@@ -486,10 +486,8 @@ a:hover {
 }
 
 /* ===== External link indicator ===== */
-.link-list__item--external .link-list__arrow::after {
-  content: ' ↗';
-  font-size: 0.75rem;
-  opacity: 0.6;
+.link-list__item--external .link-list__arrow {
+  color: var(--text-muted);
 }
 
 /* ===== Footer ===== */

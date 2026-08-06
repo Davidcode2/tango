@@ -172,13 +172,19 @@ export async function getSIMCards(
   );
   const $ = cheerio.load(html);
 
+  // Scope to the main content table — Liferay wraps content in .portlet-body or .portlet-content
+  // Avoids picking up layout/footer tables
+  const scope = $('.portlet-body table, .portlet-content table, .journal-content-article table').first();
+  const tableEl = scope.length ? scope : $('table').first();
+
   const cards: SIMCard[] = [];
-  $('table tr').each((_, row) => {
+  tableEl.find('tr').each((_, row) => {
     const cells = $(row).find('td');
     if (cells.length >= 2) {
       const number = $(cells[0]).text().trim();
       const status = $(cells[1]).text().trim();
-      if (number && status) {
+      // Filter out non-data rows: headers, nav text, empty cells
+      if (number && status && number.length < 50 && !number.match(/^(Impressum|Datenschutz|AGB|©|TNG|Letzter)/i)) {
         cards.push({ number, status });
       }
     }
@@ -193,32 +199,23 @@ export async function getStatistics(
   const html = await fetchPage('/group/mytng/statistiken', session);
   const $ = cheerio.load(html);
 
-  const title = $('h1').first().text().trim() || 'Statistiken';
-  const description =
-    $('h2').first().text().trim() ||
-    'Ihre Übersicht zu Einwahl-Accounts und Verbindungen';
+  const title = 'Statistiken';
+  const description = 'Ihre Übersicht zu Einwahl-Accounts und Verbindungen';
 
+  // Parse links from portlet content only — avoid nav/footer links
   const links: { text: string; url: string }[] = [];
-  $('.portlet-content a, .content a, .nav-item a').each((_, el) => {
+  $('.portlet-body a, .portlet-content a, .journal-content-article a').each((_, el) => {
     const $el = $(el);
     const href = $el.attr('href');
     const text = $el.text().trim();
-    if (href && text && !text.match(/^(Impressum|Datenschutz|AGB)$/i)) {
+    if (href && text && text.length > 2 && text.length < 80 &&
+        !text.match(/^(Impressum|Datenschutz|AGB|©|TNG|Home|Anmelden|Abmelden)$/i)) {
       links.push({
         text,
         url: href.startsWith('http') ? href : `${MYTNG_BASE}${href}`,
       });
     }
   });
-
-  // Fallback: if scraper finds nothing, provide standard links
-  if (links.length === 0) {
-    links.push(
-      { text: 'Mobilfunk-Statistik', url: `${MYTNG_BASE}/group/mytng/statistiken` },
-      { text: 'Festnetz-Statistik', url: `${MYTNG_BASE}/group/mytng/statistiken/festnetz` },
-      { text: 'Einzelverbindungsnachweis', url: `${MYTNG_BASE}/group/mytng/statistiken/einzelverbindung` },
-    );
-  }
 
   return { title, description, links };
 }

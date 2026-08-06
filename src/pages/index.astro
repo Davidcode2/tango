@@ -1,5 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Logo from '../components/Logo.astro';
+import Icon from '../components/Icon.astro';
 import { getSessionFromRequest } from '../lib/auth';
 import { getDashboard } from '../lib/mytng';
 
@@ -36,7 +38,9 @@ if (session) {
           </div>
           <div class="stat">
             <div class="stat__label">Status</div>
-            <div class="stat__value" style="color: var(--success);">● Aktiv</div>
+            <div class="stat__value" style="color: var(--success); display: flex; align-items: center; gap: 0.375rem;">
+              <Icon name="check-circle" size={18} /> Aktiv
+            </div>
           </div>
         </div>
       )}
@@ -52,12 +56,12 @@ if (session) {
           {services.map(s => (
             <a href={s.url} class="link-list__item">
               <span>{s.text}</span>
-              <span class="link-list__arrow">→</span>
+              <Icon name="arrow-right" size={16} class="link-list__arrow" />
             </a>
           ))}
           {services.length === 0 && (
             <div class="empty-state">
-              <div class="empty-state__icon">◉</div>
+              <Icon name="inbox" size={32} class="empty-state__icon" />
               <p>Keine Dienste verfügbar.</p>
             </div>
           )}
@@ -69,7 +73,9 @@ if (session) {
       <div class="login-wrapper">
         <div class="login-card">
           <div class="login-card__brand">
-            <h1>⚡ Tango</h1>
+            <div style="color: var(--accent-primary); display: flex; justify-content: center; margin-bottom: 0.5rem;">
+              <Logo size={32} />
+            </div>
             <p>Ihr TNG Kundenportal</p>
           </div>
           <form id="login-form" class="login-form">
@@ -81,11 +87,9 @@ if (session) {
               <label for="password" class="field__label">Passwort</label>
               <div class="password-wrap">
                 <input id="password" type="password" name="password" class="input" placeholder="••••••••" required autocomplete="current-password" />
-                <button type="button" class="password-toggle" aria-label="Passwort anzeigen">
-                  <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/>
-                    <circle cx="12" cy="12" r="3"/>
-                  </svg>
+                <button type="button" class="password-toggle" aria-label="Passwort anzeigen" id="pw-toggle">
+                  <Icon name="eye" size={18} class="eye-icon eye-icon--show" />
+                  <Icon name="eye-off" size={18} class="eye-icon eye-icon--hide" />
                 </button>
               </div>
             </div>
@@ -132,8 +136,7 @@ if (session) {
           }
         });
 
-        // Password visibility toggle
-        document.querySelector('.password-toggle')?.addEventListener('click', function() {
+        document.getElementById('pw-toggle')?.addEventListener('click', function() {
           const el = document.getElementById('password');
           el.type = el.type === 'password' ? 'text' : 'password';
           this.classList.toggle('is-visible');
@@ -172,12 +175,10 @@ if (session) {
     color: var(--accent-secondary);
     background: var(--accent-soft);
   }
-  .password-toggle.is-visible {
-    color: var(--accent-secondary);
-  }
-  .eye-icon {
-    display: block;
-  }
+  .eye-icon--hide { display: none; }
+  .password-toggle.is-visible .eye-icon--show { display: none; }
+  .password-toggle.is-visible .eye-icon--hide { display: block; }
+
   .login-footer {
     margin-top: 1.5rem;
     display: flex;

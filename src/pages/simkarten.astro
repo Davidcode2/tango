@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
 import Unauth from '../components/Unauth.astro';
 import { getSessionFromRequest } from '../lib/auth';
 import { getSIMCards } from '../lib/mytng';
@@ -29,7 +30,9 @@ if (session) {
             <div class="card__title">Meine SIM-Karten</div>
             <div class="card__subtitle">Übersicht und Status</div>
           </div>
-          <button class="btn btn--ghost btn--sm" onclick="window.location.reload()">Aktualisieren</button>
+          <button class="btn btn--ghost btn--sm" onclick="window.location.reload()">
+            <Icon name="refresh" size={14} /> Aktualisieren
+          </button>
         </div>
         {sims.length > 0 ? (
           <div class="table-wrap">
@@ -56,13 +59,15 @@ if (session) {
           </div>
         ) : (
           <div class="empty-state">
-            <div class="empty-state__icon">⬡</div>
+            <Icon name="credit-card" size={32} class="empty-state__icon" />
             <p>Sie haben keine SIM-Karten.</p>
           </div>
         )}
       </div>
       <div style="margin-top: 1rem;">
-        <a href="/vertrag" class="btn btn--ghost">← Zurück zum Vertrag</a>
+        <a href="/vertrag" class="btn btn--ghost">
+          <Icon name="arrow-left" size={16} /> Zurück zum Vertrag
+        </a>
       </div>
     </Fragment>
   ) : (
