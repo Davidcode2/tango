@@ -226,8 +226,8 @@ export async function getServices(
   const html = await fetchPage('/group/mytng/dienste', session);
   const $ = cheerio.load(html);
 
-  const title = $('h1').first().text().trim();
-  const description = $('h2').first().text().trim();
+  const title = $('h1').first().text().trim() || 'Dienste';
+  const description = $('h2').first().text().trim() || 'Sprach- und Datendienste konfigurieren';
 
   const links: { text: string; url: string }[] = [];
   $('.portlet-content a, .content a').each((_, el) => {
@@ -251,8 +251,8 @@ export async function getAccounts(
   const html = await fetchPage('/group/mytng/zugaenge', session);
   const $ = cheerio.load(html);
 
-  const title = $('h1').first().text().trim();
-  const description = $('h2').first().text().trim();
+  const title = $('h1').first().text().trim() || 'Zugänge';
+  const description = $('h2').first().text().trim() || 'Ihre Login-Verwaltung';
 
   const links: { text: string; url: string }[] = [];
   $('.portlet-content a, .content a').each((_, el) => {

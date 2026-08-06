@@ -132,6 +132,7 @@ a:hover {
   margin: 0 auto;
   padding: 2rem 1.5rem;
   overflow-x: hidden;
+  width: 100%;
 }
 
 .container--centered {
@@ -167,6 +168,8 @@ a:hover {
   border-radius: var(--radius-lg);
   padding: 2rem;
   margin-bottom: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
   transition: border-color var(--transition), box-shadow var(--transition);
 }
 

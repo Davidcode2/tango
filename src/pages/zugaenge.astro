@@ -1,57 +1,45 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PageSection from '../components/PageSection.astro';
 import Icon from '../components/Icon.astro';
 import Unauth from '../components/Unauth.astro';
 import { getSessionFromRequest } from '../lib/auth';
 import { getAccounts } from '../lib/mytng';
 
 const session = getSessionFromRequest(Astro.request);
-let title = 'Zugänge';
-let description = 'Ihre Login-Verwaltung';
 let links: { text: string; url: string }[] = [];
 
 if (session) {
   try {
     const info = await getAccounts(session);
-    title = info.title;
-    description = info.description;
     links = info.links;
-  } catch {
-    // session expired
-  }
+  } catch {}
 }
 ---
 
-<Layout title={`Tango — ${title}`}>
+<Layout title="Tango — Zugänge">
   {session ? (
-    <Fragment>
-      <div class="page-header">
-        <h1>{title}</h1>
-        <p>{description}</p>
-      </div>
-      <div class="card">
-        <div class="card__header">
-          <div>
-            <div class="card__title">Login-Verwaltung</div>
-            <div class="card__subtitle">Homepage, FTP, Webstatistik und Einwahl-Login</div>
+    <PageSection
+      title="Zugänge"
+      subtitle="Ihre Login-Verwaltung"
+      cardTitle="Login-Verwaltung"
+      cardSubtitle="Homepage, FTP, Webstatistik und Einwahl-Login"
+    >
+      <div class="link-list">
+        {links.map(l => (
+          <a href={l.url} class="link-list__item">
+            <span>{l.text}</span>
+            <Icon name="arrow-right" size={16} class="link-list__arrow" />
+          </a>
+        ))}
+        {links.length === 0 && (
+          <div class="empty-state">
+            <Icon name="inbox" size={32} class="empty-state__icon" />
+            <p>Keine Zugänge verfügbar.</p>
           </div>
-        </div>
-        <div class="link-list">
-          {links.map(l => (
-            <a href={l.url} class="link-list__item">
-              <span>{l.text}</span>
-              <Icon name="arrow-right" size={16} class="link-list__arrow" />
-            </a>
-          ))}
-          {links.length === 0 && (
-            <div class="empty-state">
-              <Icon name="inbox" size={32} class="empty-state__icon" />
-              <p>Keine Zugänge verfügbar.</p>
-            </div>
-          )}
-        </div>
+        )}
       </div>
-    </Fragment>
+    </PageSection>
   ) : (
     <Unauth pageName="Zugänge" />
   )}

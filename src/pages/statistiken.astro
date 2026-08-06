@@ -1,21 +1,18 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PageSection from '../components/PageSection.astro';
 import Icon from '../components/Icon.astro';
 import Unauth from '../components/Unauth.astro';
 import { getSessionFromRequest } from '../lib/auth';
 import { getStatistics } from '../lib/mytng';
 
 const session = getSessionFromRequest(Astro.request);
-let title = 'Statistiken';
-let description = 'Ihre Übersicht zu Einwahl-Accounts und Verbindungen';
 let links: { text: string; url: string }[] = [];
 let loadError = false;
 
 if (session) {
   try {
     const info = await getStatistics(session);
-    title = info.title;
-    description = info.description;
     links = info.links;
   } catch {
     loadError = true;
@@ -23,43 +20,36 @@ if (session) {
 }
 ---
 
-<Layout title={`Tango — ${title}`}>
+<Layout title="Tango — Statistiken">
   {session ? (
-    <Fragment>
-      <div class="page-header">
-        <h1>{title}</h1>
-        <p>{description}</p>
-      </div>
-      <div class="card">
-        <div class="card__header">
-          <div>
-            <div class="card__title">Verbindungsübersicht</div>
-            <div class="card__subtitle">Anruflisten und Einzelverbindungsnachweise</div>
-          </div>
+    <PageSection
+      title="Statistiken"
+      subtitle="Ihre Übersicht zu Einwahl-Accounts und Verbindungen"
+      cardTitle="Verbindungsübersicht"
+      cardSubtitle="Anruflisten und Einzelverbindungsnachweise"
+    >
+      {loadError ? (
+        <div class="empty-state">
+          <Icon name="alert-circle" size={32} class="empty-state__icon" />
+          <p>Statistiken konnten nicht geladen werden.</p>
+          <p style="font-size: 0.8125rem; margin-top: 0.5rem;">Bitte versuche es später erneut.</p>
         </div>
-        {loadError ? (
-          <div class="empty-state">
-            <Icon name="alert-circle" size={32} class="empty-state__icon" />
-            <p>Statistiken konnten nicht geladen werden.</p>
-            <p style="font-size: 0.8125rem; margin-top: 0.5rem;">Bitte versuche es später erneut.</p>
-          </div>
-        ) : links.length > 0 ? (
-          <div class="link-list">
-            {links.map(l => (
-              <a href={l.url} class="link-list__item">
-                <span>{l.text}</span>
-                <Icon name="arrow-right" size={16} class="link-list__arrow" />
-              </a>
-            ))}
-          </div>
-        ) : (
-          <div class="empty-state">
-            <Icon name="bar-chart" size={32} class="empty-state__icon" />
-            <p>Keine Statistiken verfügbar.</p>
-          </div>
-        )}
-      </div>
-    </Fragment>
+      ) : links.length > 0 ? (
+        <div class="link-list">
+          {links.map(l => (
+            <a href={l.url} class="link-list__item">
+              <span>{l.text}</span>
+              <Icon name="arrow-right" size={16} class="link-list__arrow" />
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <Icon name="bar-chart" size={32} class="empty-state__icon" />
+          <p>Keine Statistiken verfügbar.</p>
+        </div>
+      )}
+    </PageSection>
   ) : (
     <Unauth pageName="Statistiken" />
   )}

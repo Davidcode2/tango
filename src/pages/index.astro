@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PageSection from '../components/PageSection.astro';
 import Logo from '../components/Logo.astro';
 import Icon from '../components/Icon.astro';
 import { getSessionFromRequest } from '../lib/auth';
@@ -16,20 +17,13 @@ if (session) {
     userName = dashboard.userName;
     lastLogin = dashboard.lastLogin;
     services = dashboard.services;
-  } catch {
-    // session expired
-  }
+  } catch {}
 }
 ---
 
 <Layout title={session ? 'Tango — Übersicht' : 'Tango — Anmelden'} hideNav={!session}>
   {session ? (
     <Fragment>
-      <div class="page-header">
-        <h1>Übersicht</h1>
-        <p>Ihr persönlicher Service-Bereich von TNG</p>
-      </div>
-
       {lastLogin && (
         <div class="card">
           <div class="card__header">
@@ -54,13 +48,12 @@ if (session) {
         </div>
       )}
 
-      <div class="card">
-        <div class="card__header">
-          <div>
-            <div class="card__title">Schnellzugriff</div>
-            <div class="card__subtitle">Ihre Dienste und Vertragsverwaltung</div>
-          </div>
-        </div>
+      <PageSection
+        title="Übersicht"
+        subtitle="Ihr persönlicher Service-Bereich von TNG"
+        cardTitle="Schnellzugriff"
+        cardSubtitle="Ihre Dienste und Vertragsverwaltung"
+      >
         <div class="link-list">
           {services.map(s => (
             <a href={s.url} class="link-list__item">
@@ -75,7 +68,7 @@ if (session) {
             </div>
           )}
         </div>
-      </div>
+      </PageSection>
     </Fragment>
   ) : (
     <Fragment>
@@ -156,73 +149,18 @@ if (session) {
 </Layout>
 
 <style>
-  .password-wrap {
-    position: relative;
-  }
-  .password-wrap .input {
-    padding-right: 3rem;
-  }
+  .password-wrap { position: relative; }
+  .password-wrap .input { padding-right: 3rem; }
   .password-toggle {
-    position: absolute;
-    right: 0.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--text-muted);
-    padding: 0.5rem;
-    min-width: 44px;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--radius-sm);
-    transition: color var(--transition), background var(--transition);
+    position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer; color: var(--text-muted);
+    padding: 0.5rem; min-width: 44px; min-height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-sm); transition: color var(--transition), background var(--transition);
   }
-  .password-toggle:hover {
-    color: var(--accent-secondary);
-    background: var(--accent-soft);
-  }
-  .login-footer {
-    margin-top: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .login-footer__links {
-    font-size: 0.8125rem;
-    color: var(--text-secondary);
-  }
-  .login-footer__links a {
-    color: var(--text-secondary);
-  }
-  .login-footer__links a:hover {
-    color: var(--accent-secondary);
-  }
-
-  /* Stat row (Übersicht) */
-  .stat-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-  }
-  .stat-row__item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-  .stat-row__label {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-muted);
-  }
-  .stat-row__value {
-    font-family: var(--font-display);
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--text-primary);
-  }
+  .password-toggle:hover { color: var(--accent-secondary); background: var(--accent-soft); }
+  .login-footer { margin-top: 1.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+  .login-footer__links { font-size: 0.8125rem; color: var(--text-secondary); }
+  .login-footer__links a { color: var(--text-secondary); }
+  .login-footer__links a:hover { color: var(--accent-secondary); }
 </style>

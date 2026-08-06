@@ -1,0 +1,27 @@
+---
+// PageSection.astro — shared layout component for all authenticated pages
+// Ensures identical header spacing, card width, padding, and margins everywhere
+interface Props {
+  title: string;
+  subtitle: string;
+  cardTitle: string;
+  cardSubtitle: string;
+}
+const { title, subtitle, cardTitle, cardSubtitle } = Astro.props;
+---
+
+<div class="page-header">
+  <h1>{title}</h1>
+  <p>{subtitle}</p>
+</div>
+
+<div class="card">
+  <div class="card__header">
+    <div>
+      <div class="card__title">{cardTitle}</div>
+      <div class="card__subtitle">{cardSubtitle}</div>
+    </div>
+    <slot name="action" />
+  </div>
+  <slot />
+</div>

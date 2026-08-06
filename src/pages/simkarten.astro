@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PageSection from '../components/PageSection.astro';
 import Icon from '../components/Icon.astro';
 import Unauth from '../components/Unauth.astro';
 import { getSessionFromRequest } from '../lib/auth';
@@ -11,65 +12,53 @@ let sims: { number: string; status: string }[] = [];
 if (session) {
   try {
     sims = await getSIMCards(session);
-  } catch {
-    // session expired
-  }
+  } catch {}
 }
 ---
 
 <Layout title="Tango — SIM-Karten">
   {session ? (
-    <Fragment>
-      <div class="page-header">
-        <h1>SIM-Karten</h1>
-        <p>Verwaltung und Aktivierung Ihrer TNG SIM-Karten</p>
-      </div>
-      <div class="card">
-        <div class="card__header">
-          <div>
-            <div class="card__title">Meine SIM-Karten</div>
-            <div class="card__subtitle">Übersicht und Status</div>
-          </div>
-          <button class="btn btn--ghost btn--sm" onclick="window.location.reload()">
-            <Icon name="refresh" size={14} /> Aktualisieren
-          </button>
-        </div>
-        {sims.length > 0 ? (
-          <div class="table-wrap">
-            <table class="table">
-              <thead>
+    <PageSection
+      title="SIM-Karten"
+      subtitle="Verwaltung und Aktivierung Ihrer TNG SIM-Karten"
+      cardTitle="Meine SIM-Karten"
+      cardSubtitle="Übersicht und Status"
+    >
+      <Fragment slot="action">
+        <button class="btn btn--ghost btn--sm" onclick="window.location.reload()">
+          <Icon name="refresh" size={14} /> Aktualisieren
+        </button>
+      </Fragment>
+      {sims.length > 0 ? (
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Nummer</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sims.map(sim => (
                 <tr>
-                  <th>Nummer</th>
-                  <th>Status</th>
+                  <td>{sim.number}</td>
+                  <td>
+                    <span class:list={["badge", sim.status === 'Aktiv' ? 'badge--success' : 'badge--warning']}>
+                      {sim.status}
+                    </span>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {sims.map(sim => (
-                  <tr>
-                    <td>{sim.number}</td>
-                    <td>
-                      <span class:list={["badge", sim.status === 'Aktiv' ? 'badge--success' : 'badge--warning']}>
-                        {sim.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div class="empty-state">
-            <Icon name="credit-card" size={32} class="empty-state__icon" />
-            <p>Sie haben keine SIM-Karten.</p>
-          </div>
-        )}
-      </div>
-      <div style="margin-top: 1rem;">
-        <a href="/vertrag" class="btn btn--ghost">
-          <Icon name="arrow-left" size={16} /> Zurück zum Vertrag
-        </a>
-      </div>
-    </Fragment>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div class="empty-state">
+          <Icon name="credit-card" size={32} class="empty-state__icon" />
+          <p>Sie haben keine SIM-Karten.</p>
+        </div>
+      )}
+    </PageSection>
   ) : (
     <Unauth pageName="SIM-Karten" />
   )}

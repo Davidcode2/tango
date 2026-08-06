@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PageSection from '../components/PageSection.astro';
 import Icon from '../components/Icon.astro';
 import Unauth from '../components/Unauth.astro';
 import { getSessionFromRequest } from '../lib/auth';
@@ -11,62 +12,48 @@ let invoices: { number: string; date: string; pdfUrl?: string; csvUrl?: string }
 if (session) {
   try {
     invoices = await getInvoices(session);
-  } catch {
-    // session expired
-  }
+  } catch {}
 }
 ---
 
 <Layout title="Tango — Mein Vertrag">
   {session ? (
-    <Fragment>
-      <div class="page-header">
-        <h1>Mein Vertrag</h1>
-        <p>Rechnungsarchiv und SIM-Karten-Verwaltung</p>
-      </div>
-      <div class="card">
-        <div class="card__header">
-          <div>
-            <div class="card__title">Rechnungsarchiv</div>
-            <div class="card__subtitle">Ihre Rechnungen als PDF und CSV</div>
-          </div>
-        </div>
-        {invoices.length > 0 ? (
-          <div class="table-wrap">
-            <table class="table">
-              <thead>
+    <PageSection
+      title="Mein Vertrag"
+      subtitle="Rechnungsarchiv und SIM-Karten-Verwaltung"
+      cardTitle="Rechnungsarchiv"
+      cardSubtitle="Ihre Rechnungen als PDF und CSV"
+    >
+      {invoices.length > 0 ? (
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Rechnungsnr.</th>
+                <th>Datum</th>
+                <th>PDF</th>
+                <th>CSV</th>
+              </tr>
+            </thead>
+            <tbody>
+              {invoices.map(inv => (
                 <tr>
-                  <th>Rechnungsnr.</th>
-                  <th>Datum</th>
-                  <th>PDF</th>
-                  <th>CSV</th>
+                  <td>{inv.number}</td>
+                  <td>{inv.date}</td>
+                  <td>{inv.pdfUrl ? <a href={inv.pdfUrl} target="_blank" rel="noopener">PDF</a> : '—'}</td>
+                  <td>{inv.csvUrl ? <a href={inv.csvUrl} target="_blank" rel="noopener">CSV</a> : '—'}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {invoices.map(inv => (
-                  <tr>
-                    <td>{inv.number}</td>
-                    <td>{inv.date}</td>
-                    <td>{inv.pdfUrl ? <a href={inv.pdfUrl} target="_blank" rel="noopener">PDF</a> : '—'}</td>
-                    <td>{inv.csvUrl ? <a href={inv.csvUrl} target="_blank" rel="noopener">CSV</a> : '—'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div class="empty-state">
-            <Icon name="file-text" size={32} class="empty-state__icon" />
-            <p>Sie haben noch keine Rechnungen erhalten.</p>
-          </div>
-        )}
-      </div>
-      <div style="margin-top: 1rem;">
-        <a href="/simkarten" class="btn btn--ghost">
-          <Icon name="credit-card" size={16} /> SIM-Karten verwalten
-        </a>
-      </div>
-    </Fragment>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div class="empty-state">
+          <Icon name="file-text" size={32} class="empty-state__icon" />
+          <p>Sie haben noch keine Rechnungen erhalten.</p>
+        </div>
+      )}
+    </PageSection>
   ) : (
     <Unauth pageName="Vertragsdaten" />
   )}
